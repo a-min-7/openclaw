@@ -885,15 +885,7 @@ export function renderChat(props: ChatProps) {
           </div>
 
           <div class="agent-chat__toolbar-right">
-            <button class="btn-ghost" @click=${() => {
-              searchOpen = !searchOpen;
-              if (!searchOpen) {
-                searchQuery = "";
-              }
-              requestUpdate();
-            }} title="Search (Cmd+F)">
-              ${icons.search}
-            </button>
+            ${nothing /* search hidden for now */}
             <button class="btn-ghost" @click=${() => exportMarkdown(props)} title="Export" ?disabled=${props.messages.length === 0}>
               ${icons.download}
             </button>
