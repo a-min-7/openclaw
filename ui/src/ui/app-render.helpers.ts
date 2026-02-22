@@ -396,55 +396,30 @@ function resolveSessionOptions(
   return options;
 }
 
-type ThemeOption = { id: ThemeMode; label: string; iconKey: keyof typeof icons };
+type ThemeOption = { id: ThemeMode; label: string };
 const THEME_OPTIONS: ThemeOption[] = [
-  { id: "dark", label: "Dark", iconKey: "monitor" },
-  { id: "light", label: "Light", iconKey: "book" },
-  { id: "openknot", label: "Knot", iconKey: "zap" },
-  { id: "fieldmanual", label: "Field", iconKey: "terminal" },
-  { id: "clawdash", label: "Chrome", iconKey: "settings" },
+  { id: "dark", label: "Dark" },
+  { id: "light", label: "Light" },
+  { id: "openknot", label: "Knot" },
+  { id: "fieldmanual", label: "Field" },
+  { id: "clawdash", label: "Chrome" },
 ];
 
 export function renderThemeToggle(state: AppViewState) {
-  const app = state as unknown as OpenClawApp;
-  const applyTheme = (next: ThemeMode) => (event: MouseEvent) => {
-    const element = event.currentTarget as HTMLElement;
-    const context: ThemeTransitionContext = { element };
-    if (event.clientX || event.clientY) {
-      context.pointerClientX = event.clientX;
-      context.pointerClientY = event.clientY;
-    }
-    state.setTheme(next, context);
-  };
-
-  const handleCollapse = () => app.handleThemeToggleCollapse();
-
   return html`
-    <div
-      class="theme-toggle"
-      @mouseleave=${handleCollapse}
-      @focusout=${(e: FocusEvent) => {
-        const toggle = e.currentTarget as HTMLElement;
-        requestAnimationFrame(() => {
-          if (!toggle.contains(document.activeElement)) {
-            handleCollapse();
-          }
-        });
+    <select
+      class="theme-select"
+      .value=${state.theme}
+      aria-label="Theme"
+      title="Theme"
+      @change=${(e: Event) => {
+        const select = e.target as HTMLSelectElement;
+        const next = select.value as ThemeMode;
+        const context: ThemeTransitionContext = { element: select };
+        state.setTheme(next, context);
       }}
     >
-      ${state.themeOrder.map((id) => {
-        const opt = THEME_OPTIONS.find((o) => o.id === id)!;
-        return html`
-          <button
-            class="theme-btn ${state.theme === id ? "active" : ""}"
-            @click=${applyTheme(id)}
-            aria-pressed=${state.theme === id}
-            title=${opt.label}
-          >
-            ${icons[opt.iconKey]}
-          </button>
-        `;
-      })}
-    </div>
+      ${THEME_OPTIONS.map((opt) => html`<option value=${opt.id}>${opt.label}</option>`)}
+    </select>
   `;
 }

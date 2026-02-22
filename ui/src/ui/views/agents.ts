@@ -128,8 +128,8 @@ export function renderAgents(props: AgentsProps) {
   return html`
     <div class="agents-layout">
       <section class="agents-toolbar">
-        <div class="row" style="gap: 12px; align-items: center; flex-wrap: wrap;">
-          <label class="field" style="min-width: 200px; max-width: 320px;">
+        <div class="row agents-toolbar-row">
+          <label class="field agents-toolbar-field">
             <span class="label">Agent</span>
             <select
               class="agents-select"
@@ -158,7 +158,7 @@ export function renderAgents(props: AgentsProps) {
         </div>
         ${
           props.error
-            ? html`<div class="callout danger" style="margin-top: 12px;">${props.error}</div>`
+            ? html`<div class="callout danger" style="margin-top: 8px;">${props.error}</div>`
             : nothing
         }
       </section>

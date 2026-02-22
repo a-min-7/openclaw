@@ -469,12 +469,6 @@ export class OpenClawApp extends LitElement {
     return [active, ...rest];
   }
 
-  handleThemeToggleCollapse() {
-    setTimeout(() => {
-      this.themeOrder = this.buildThemeOrder(this.theme);
-    }, 80);
-  }
-
   async loadOverview() {
     await loadOverviewInternal(this as unknown as Parameters<typeof loadOverviewInternal>[0]);
   }

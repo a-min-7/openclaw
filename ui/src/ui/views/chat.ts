@@ -21,6 +21,7 @@ import { detectTextDirection } from "../text-direction.ts";
 import type { SessionsListResult } from "../types.ts";
 import type { ChatItem, MessageGroup } from "../types/chat-types.ts";
 import type { ChatAttachment, ChatQueueItem } from "../ui-types.ts";
+import { agentLogoUrl } from "./agents-utils.ts";
 import { renderMarkdownSidebar } from "./markdown-sidebar.ts";
 import "../components/resizable-divider.ts";
 
@@ -93,6 +94,7 @@ export type ChatProps = {
   onCloseSidebar?: () => void;
   onSplitRatioChange?: (ratio: number) => void;
   onChatScroll?: (event: Event) => void;
+  basePath?: string;
 };
 
 const COMPACTION_TOAST_DURATION_MS = 5000;
@@ -137,9 +139,6 @@ let slashMenuIndex = 0;
 let searchOpen = false;
 let searchQuery = "";
 let pinnedExpanded = false;
-let voiceActive = false;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let recognition: any = null;
 
 function adjustTextareaHeight(el: HTMLTextAreaElement) {
   el.style.height = "auto";
@@ -361,52 +360,6 @@ function tokenEstimate(draft: string): string | null {
   return `~${Math.ceil(draft.length / 4)} tokens`;
 }
 
-function startVoice(props: ChatProps, requestUpdate: () => void): void {
-  const SR =
-    (window as unknown as Record<string, unknown>).webkitSpeechRecognition ??
-    (window as unknown as Record<string, unknown>).SpeechRecognition;
-  if (!SR) {
-    return;
-  }
-  const rec = new (SR as new () => Record<string, unknown>)();
-  rec.continuous = false;
-  rec.interimResults = true;
-  rec.lang = "en-US";
-  rec.onresult = (event: Record<string, unknown>) => {
-    let transcript = "";
-    const results = (
-      event as { results: { length: number; [i: number]: { 0: { transcript: string } } } }
-    ).results;
-    for (let i = 0; i < results.length; i++) {
-      transcript += results[i][0].transcript;
-    }
-    props.onDraftChange(transcript);
-  };
-  (rec as unknown as EventTarget).addEventListener("end", () => {
-    voiceActive = false;
-    recognition = null;
-    requestUpdate();
-  });
-  (rec as unknown as EventTarget).addEventListener("error", () => {
-    voiceActive = false;
-    recognition = null;
-    requestUpdate();
-  });
-  (rec as { start: () => void }).start();
-  recognition = rec;
-  voiceActive = true;
-  requestUpdate();
-}
-
-function stopVoice(requestUpdate: () => void): void {
-  if (recognition && typeof recognition.stop === "function") {
-    recognition.stop();
-  }
-  recognition = null;
-  voiceActive = false;
-  requestUpdate();
-}
-
 function exportMarkdown(props: ChatProps): void {
   const history = Array.isArray(props.messages) ? props.messages : [];
   if (history.length === 0) {
@@ -432,7 +385,7 @@ function exportMarkdown(props: ChatProps): void {
 function renderWelcomeState(props: ChatProps): TemplateResult {
   const name = props.assistantName || "Assistant";
   const avatar = props.assistantAvatar ?? props.assistantAvatarUrl;
-  const initials = name.slice(0, 2).toUpperCase();
+  const logoUrl = agentLogoUrl(props.basePath ?? "");
 
   return html`
     <div class="agent-chat__welcome" style="--agent-color: var(--accent)">
@@ -440,11 +393,11 @@ function renderWelcomeState(props: ChatProps): TemplateResult {
       ${
         avatar
           ? html`<img src=${avatar} alt=${name} style="width:56px; height:56px; border-radius:50%; object-fit:cover;" />`
-          : html`<div class="agent-chat__avatar agent-chat__avatar--logo">${icons.lobster}</div>`
+          : html`<div class="agent-chat__avatar agent-chat__avatar--logo"><img src=${logoUrl} alt="OpenClaw" /></div>`
       }
       <h2>${name}</h2>
       <div class="agent-chat__badges">
-        <span class="agent-chat__badge">${icons.lobster} Ready to chat</span>
+        <span class="agent-chat__badge"><img src=${logoUrl} alt="" /> Ready to chat</span>
       </div>
       <p class="agent-chat__hint">
         Type a message below &middot; <kbd>/</kbd> for commands

@@ -302,18 +302,10 @@
     font-size: 11px;
   }
 
-  .theme-toggle {
-    height: 28px;
-  }
-
-  .theme-btn svg {
-    width: 12px;
-    height: 12px;
-  }
-
-  .theme-icon {
-    width: 12px;
-    height: 12px;
+  .theme-select {
+    height: 26px;
+    min-width: 78px;
+    font-size: 11px;
   }
 }
 
@@ -376,12 +368,9 @@
     padding: 3px 6px;
   }
 
-  .theme-toggle {
-    height: 26px;
-  }
-
-  .theme-icon {
-    width: 11px;
-    height: 11px;
+  .theme-select {
+    height: 24px;
+    min-width: 72px;
+    font-size: 10px;
   }
 }

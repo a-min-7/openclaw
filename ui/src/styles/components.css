@@ -314,109 +314,37 @@
 }
 
 /* ===========================================
-   Theme Toggle
+   Theme Select
    =========================================== */
 
-.theme-toggle {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+.theme-select {
+  appearance: none;
   border: 1px solid var(--clay-border-color);
-  border-radius: 999px;
-  padding: 5px;
-  height: 36px;
+  border-radius: var(--radius-md);
+  padding: 4px 28px 4px 10px;
+  height: 28px;
+  min-width: 90px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
   background: var(--clay-bg);
-  overflow: hidden;
-  max-width: 36px;
-  transition:
-    max-width var(--clay-duration-normal) var(--clay-easing),
-    padding var(--clay-duration-normal) var(--clay-easing);
-}
-
-@media (hover: hover) {
-  .theme-toggle:hover {
-    max-width: 400px;
-    padding: 4px 6px;
-  }
-}
-
-.theme-toggle:focus-within {
-  max-width: 400px;
-  padding: 4px 6px;
-}
-
-.theme-toggle.theme-toggle--open {
-  max-width: 400px;
-  padding: 4px 6px;
-}
-
-.theme-btn {
-  border: 0;
-  background: transparent;
-  padding: 6px 10px;
-  border-radius: 999px;
-  font-size: 0.84rem;
-  color: var(--muted);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  white-space: nowrap;
-  flex-shrink: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236e7a8a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
   cursor: pointer;
   transition:
-    color var(--clay-duration-fast) var(--clay-easing),
-    background var(--clay-duration-fast) var(--clay-easing),
-    transform var(--clay-duration-fast) var(--clay-easing);
+    border-color var(--clay-duration-fast) var(--clay-easing),
+    box-shadow var(--clay-duration-fast) var(--clay-easing);
 }
 
-.theme-btn.active {
-  padding: 6px 8px;
-  background: var(--clay-bg-button);
-  color: var(--text);
-  box-shadow: var(--clay-shadow-pressed);
+.theme-select:hover {
+  border-color: var(--border-strong);
 }
 
-.theme-btn:not(.active) {
-  opacity: 0;
-  pointer-events: none;
-  width: 0;
-  padding: 6px 0;
-  overflow: hidden;
-  transition:
-    opacity var(--clay-duration-fast) var(--clay-easing),
-    width var(--clay-duration-fast) var(--clay-easing),
-    padding var(--clay-duration-fast) var(--clay-easing),
-    color var(--clay-duration-fast) var(--clay-easing),
-    background var(--clay-duration-fast) var(--clay-easing),
-    transform var(--clay-duration-fast) var(--clay-easing);
-}
-
-.theme-toggle:hover .theme-btn,
-.theme-toggle:focus-within .theme-btn,
-.theme-toggle--open .theme-btn {
-  opacity: 1;
-  pointer-events: auto;
-  width: auto;
-  padding: 6px 10px;
-}
-
-.theme-btn:hover {
-  border: 0;
-  color: var(--text);
-}
-
-.theme-btn:active {
-  transform: scale(0.93);
-}
-
-.theme-btn svg {
-  width: 16px;
-  height: 16px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 1.5px;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.theme-select:focus-visible {
+  outline: none;
+  border-color: var(--ring);
+  box-shadow: var(--focus-ring);
 }
 
 /* ===========================================
@@ -2122,12 +2050,24 @@
 .agents-layout {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
+  gap: 10px;
 }
 
 .agents-toolbar {
   display: grid;
-  gap: 12px;
+  gap: 8px;
+}
+
+.agents-toolbar-row {
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.agents-toolbar-field {
+  min-width: 160px;
+  max-width: 280px;
+  gap: 4px;
 }
 
 .agents-select {
@@ -2136,7 +2076,7 @@
 
 .agents-main {
   display: grid;
-  gap: 16px;
+  gap: 10px;
 }
 
 .agent-list {
@@ -2179,9 +2119,9 @@
 }
 
 .agent-avatar--lg {
-  width: 48px;
-  height: 48px;
-  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
 }
 
 .agent-info {
@@ -2202,7 +2142,7 @@
 .agent-pill {
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  padding: 4px 10px;
+  padding: 3px 8px;
   font-size: 11px;
   color: var(--muted);
   background: var(--secondary);
@@ -2218,21 +2158,26 @@
 .agent-header {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
+  gap: 12px;
   align-items: center;
+  padding: 10px 14px;
 }
 
 .agent-header-main {
   display: flex;
-  gap: 16px;
+  gap: 10px;
   align-items: center;
 }
 
 .agent-header-meta {
   display: grid;
   justify-items: end;
-  gap: 6px;
+  gap: 4px;
   color: var(--muted);
+}
+
+.agent-header .card-sub {
+  margin-top: 2px;
 }
 
 .agent-tabs {
@@ -2244,7 +2189,7 @@
 .agent-tab {
   border: 1px solid var(--border);
   border-radius: var(--radius-full);
-  padding: 6px 14px;
+  padding: 5px 12px;
   font-size: 12px;
   font-weight: 600;
   background: var(--secondary);
