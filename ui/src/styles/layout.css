@@ -767,10 +767,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  height: 40px;
-  min-height: 40px;
-  padding: 2px 0;
+  gap: 12px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
   overflow: hidden;
   transform-origin: top center;
   transition:
@@ -778,13 +778,13 @@
     transform var(--shell-focus-duration) var(--shell-focus-ease),
     max-height var(--shell-focus-duration) var(--shell-focus-ease),
     padding var(--shell-focus-duration) var(--shell-focus-ease);
-  max-height: 40px;
+  max-height: 44px;
 }
 
 .shell--chat-focus .content-header {
   opacity: 0;
   transform: translateY(-8px);
-  max-height: 0px;
+  max-height: 0;
   padding: 0;
   pointer-events: none;
 }
@@ -816,7 +816,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 12px;
 }
 
 .content--chat .content-header > div:first-child {
@@ -853,34 +853,45 @@
   flex-shrink: 0;
 }
 
-.content-header .chat-controls__session select,
-.content-header .chat-controls__thinking {
-  font-size: 13px;
-}
-
 .content-header .chat-controls__session {
   display: flex;
   align-items: center;
   gap: 0;
+  min-width: 0;
 }
 
 .content-header .chat-controls__session select {
-  height: 20px;
+  height: 32px;
   line-height: 1;
-  padding: 2px 24px 2px 6px;
-  background-position: right 6px center;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  padding: 0 28px 0 10px;
+  background-position: right 8px center;
+  border-radius: var(--radius-md);
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .content-header .chat-controls__separator {
-  line-height: 20px;
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  font-size: 0;
+  color: transparent;
+  overflow: hidden;
   align-self: center;
+  flex-shrink: 0;
+  margin: 0 2px;
 }
 
 .content-header .chat-controls__thinking {
-  height: 20px;
-  min-height: 20px;
+  height: 32px;
+  min-height: 32px;
   align-items: center;
-  padding: 0 8px;
+  padding: 0 10px;
+  font-size: 13px;
 }
 
 /* ===========================================
@@ -956,10 +967,9 @@
   }
 
   .content-header {
-    /* This controls the height of the content header on desktop */
-    height: 40px;
-    min-height: 40px;
-    max-height: 40px;
+    height: 44px;
+    min-height: 44px;
+    max-height: 44px;
     padding: 0;
   }
 
