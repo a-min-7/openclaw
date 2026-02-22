@@ -757,8 +757,6 @@ export function renderChat(props: ChatProps) {
       ${renderSearchBar(requestUpdate)}
       ${renderPinnedSection(props, pinned, requestUpdate)}
 
-      ${renderAgentBar(props)}
-
       <div class="chat-split-container ${sidebarOpen ? "chat-split-container--open" : ""}">
         <div
           class="chat-main"
@@ -925,50 +923,6 @@ export function renderChat(props: ChatProps) {
         </div>
       </div>
     </section>
-  `;
-}
-
-function renderAgentBar(props: ChatProps) {
-  const agents = props.agentsList?.agents ?? [];
-  if (agents.length <= 1 && !props.sessions?.sessions?.length) {
-    return nothing;
-  }
-
-  return html`
-    <div class="chat-agent-bar">
-      <div class="chat-agent-bar__left">
-        ${
-          agents.length > 1
-            ? html`
-            <select
-              class="chat-agent-select"
-              .value=${props.currentAgentId}
-              @change=${(e: Event) => props.onAgentChange((e.target as HTMLSelectElement).value)}
-            >
-              ${agents.map(
-                (a) => html`
-                <option value=${a.id} ?selected=${a.id === props.currentAgentId}>
-                  ${a.identity?.name || a.name || a.id}
-                </option>
-              `,
-              )}
-            </select>
-          `
-            : html`<span class="chat-agent-bar__name">${agents[0]?.identity?.name || agents[0]?.name || props.currentAgentId}</span>`
-        }
-      </div>
-      <div class="chat-agent-bar__right">
-        ${
-          props.onNavigateToAgent
-            ? html`
-            <button class="btn-ghost btn-ghost--sm" @click=${() => props.onNavigateToAgent?.()} title="Agent settings">
-              ${icons.settings}
-            </button>
-          `
-            : nothing
-        }
-      </div>
-    </div>
   `;
 }
 

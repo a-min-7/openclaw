@@ -1075,6 +1075,12 @@
   min-width: 0;
 }
 
+/* Sessions table: wider key column */
+.data-table th:first-child,
+.data-table td:first-child {
+  min-width: 280px;
+}
+
 .session-key-cell .session-link,
 .session-key-display-name {
   overflow-wrap: anywhere;
@@ -2055,30 +2061,30 @@
 
 .agents-toolbar {
   display: grid;
-  gap: 8px;
+  gap: 4px;
 }
 
 .agents-toolbar-row {
   display: grid;
-  gap: 6px;
+  gap: 3px;
 }
 
 .agents-toolbar-label {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .agents-control-row {
   display: grid;
   grid-template-columns: 11fr 1fr;
-  gap: 8px;
+  gap: 4px;
   align-items: stretch;
 }
 
 .agents-control-main {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: stretch;
   min-width: 0;
 }
@@ -2086,12 +2092,13 @@
 .agents-control-main .agents-select {
   flex: 1;
   min-width: 0;
-  height: 40px;
+  height: 20px;
+  font-size: 12px;
   box-sizing: border-box;
   border: 1px solid color-mix(in srgb, var(--input) 92%, transparent);
   background: color-mix(in srgb, var(--card) 96%, var(--bg));
-  border-radius: var(--radius-md);
-  padding: 8px 36px 8px 14px;
+  border-radius: var(--radius-sm);
+  padding: 2px 28px 2px 8px;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a1a1aa' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -2118,10 +2125,11 @@
 }
 
 .agents-control-main .agent-actions-toggle {
-  width: 40px;
-  height: 40px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
   padding: 0;
+  font-size: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -2131,7 +2139,9 @@
 .agents-refresh-btn {
   width: 100%;
   min-width: 0;
-  height: 40px;
+  height: 20px;
+  font-size: 11px;
+  padding: 0 6px;
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -2329,13 +2339,25 @@
 
 .agent-model-fields {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 16px;
   align-items: start;
 }
 
 .agent-model-fields .field {
   min-width: 0;
+  overflow: hidden;
+}
+
+.agent-model-fields .field select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.agent-model-fields .agent-chip-input {
+  min-width: 0;
+  overflow: hidden;
 }
 
 @media (max-width: 640px) {
