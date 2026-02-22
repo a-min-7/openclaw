@@ -1,12 +1,9 @@
 import { html, nothing } from "lit";
 import type { AgentIdentityResult, AgentsFilesListResult, AgentsListResult } from "../types.ts";
 import {
-  agentAvatarHue,
-  agentBadgeText,
   buildModelOptions,
   normalizeModelValue,
   parseFallbackList,
-  resolveAgentAvatarUrl,
   resolveAgentConfig,
   resolveModelFallbacks,
   resolveModelLabel,
@@ -36,9 +33,6 @@ export function renderAgentOverview(params: {
     agent,
     configForm,
     agentFilesList,
-    agentIdentity,
-    agentIdentityLoading,
-    agentIdentityError,
     configLoading,
     configSaving,
     configDirty,
@@ -65,24 +59,9 @@ export function renderAgentOverview(params: {
   const effectivePrimary = modelPrimary ?? defaultPrimary ?? null;
   const modelFallbacks = resolveModelFallbacks(config.entry?.model);
   const fallbackChips = modelFallbacks ?? [];
-  const identityName =
-    agentIdentity?.name?.trim() ||
-    agent.identity?.name?.trim() ||
-    agent.name?.trim() ||
-    config.entry?.name ||
-    "-";
-  const avatarUrl = resolveAgentAvatarUrl(agent, agentIdentity);
   const skillFilter = Array.isArray(config.entry?.skills) ? config.entry?.skills : null;
   const skillCount = skillFilter?.length ?? null;
-  const identityStatus = agentIdentityLoading
-    ? "Loading…"
-    : agentIdentityError
-      ? "Unavailable"
-      : "";
   const isDefault = Boolean(params.defaultId && agent.id === params.defaultId);
-  const badge = agentBadgeText(agent.id, params.defaultId);
-  const hue = agentAvatarHue(agent.id);
-  const subtitle = agent.identity?.theme?.trim() || "";
   const disabled = !configForm || configLoading || configSaving;
 
   const removeChip = (index: number) => {
@@ -106,21 +85,6 @@ export function renderAgentOverview(params: {
     <section class="card">
       <div class="card-title">Overview</div>
       <div class="card-sub">Workspace paths and identity metadata.</div>
-
-      <div class="agent-identity-card" style="margin-top: 16px;">
-        <div class="agent-avatar" style="--agent-hue: ${hue}">
-          ${avatarUrl ? html`<img src=${avatarUrl} alt="" class="agent-avatar__img" />` : "🦞"}
-        </div>
-        <div class="agent-identity-details">
-          <div class="agent-identity-name">${identityName}</div>
-          <div class="agent-identity-meta">
-            
-            ${subtitle ? html`<span>${subtitle}</span>` : nothing}
-            ${badge ? html`<span class="agent-pill">${badge}</span>` : nothing}
-            ${identityStatus ? html`<span class="muted">${identityStatus}</span>` : nothing}
-          </div>
-        </div>
-      </div>
 
       <div class="agents-overview-grid" style="margin-top: 16px;">
         <div class="agent-kv">

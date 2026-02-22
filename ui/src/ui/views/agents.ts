@@ -15,13 +15,7 @@ import {
   renderAgentCron,
 } from "./agents-panels-status-files.ts";
 import { renderAgentTools, renderAgentSkills } from "./agents-panels-tools-skills.ts";
-import {
-  agentAvatarHue,
-  agentBadgeText,
-  buildAgentContext,
-  normalizeAgentLabel,
-  resolveAgentAvatarUrl,
-} from "./agents-utils.ts";
+import { agentBadgeText, buildAgentContext, normalizeAgentLabel } from "./agents-utils.ts";
 
 export type AgentsPanel = "overview" | "files" | "tools" | "skills" | "channels" | "cron";
 
@@ -128,11 +122,12 @@ export function renderAgents(props: AgentsProps) {
   return html`
     <div class="agents-layout">
       <section class="agents-toolbar">
-        <div class="row agents-toolbar-row">
-          <label class="field agents-toolbar-field">
-            <span class="label">Agent</span>
-            <select
-              class="agents-select"
+        <div class="agents-toolbar-row">
+          <span class="agents-toolbar-label">Agent</span>
+          <div class="agents-control-row">
+            <div class="agents-control-main">
+              <select
+                class="agents-select"
               .value=${selectedId ?? ""}
               ?disabled=${props.loading || agents.length === 0}
               @change=${(e: Event) => props.onSelectAgent((e.target as HTMLSelectElement).value)}
@@ -151,10 +146,48 @@ export function renderAgents(props: AgentsProps) {
                     )
               }
             </select>
-          </label>
-          <button class="btn btn--sm" ?disabled=${props.loading} @click=${props.onRefresh}>
-            ${props.loading ? "Loading…" : "Refresh"}
-          </button>
+            ${
+              selectedAgent
+                ? html`
+                    <div class="agent-actions-wrap">
+                      <button
+                        class="agent-actions-toggle"
+                        type="button"
+                        @click=${() => {
+                          actionsMenuOpen = !actionsMenuOpen;
+                        }}
+                      >⋯</button>
+                      ${
+                        actionsMenuOpen
+                          ? html`
+                              <div class="agent-actions-menu">
+                                <button type="button" @click=${() => {
+                                  void navigator.clipboard.writeText(selectedAgent.id);
+                                  actionsMenuOpen = false;
+                                }}>Copy agent ID</button>
+                                <button
+                                  type="button"
+                                  ?disabled=${Boolean(defaultId && selectedAgent.id === defaultId)}
+                                  @click=${() => {
+                                    props.onSetDefault(selectedAgent.id);
+                                    actionsMenuOpen = false;
+                                  }}
+                                >
+                                  ${defaultId && selectedAgent.id === defaultId ? "Already default" : "Set as default"}
+                                </button>
+                              </div>
+                            `
+                          : nothing
+                      }
+                    </div>
+                  `
+                : nothing
+            }
+            </div>
+            <button class="btn btn--sm agents-refresh-btn" ?disabled=${props.loading} @click=${props.onRefresh}>
+              ${props.loading ? "Loading…" : "Refresh"}
+            </button>
+          </div>
         </div>
         ${
           props.error
@@ -172,12 +205,6 @@ export function renderAgents(props: AgentsProps) {
                 </div>
               `
             : html`
-                ${renderAgentHeader(
-                  selectedAgent,
-                  defaultId,
-                  props.agentIdentityById[selectedAgent.id] ?? null,
-                  props.onSetDefault,
-                )}
                 ${renderAgentTabs(props.activePanel, (panel) => props.onSelectPanel(panel), tabCounts)}
                 ${
                   props.activePanel === "overview"
@@ -305,73 +332,6 @@ export function renderAgents(props: AgentsProps) {
 }
 
 let actionsMenuOpen = false;
-
-function renderAgentHeader(
-  agent: AgentsListResult["agents"][number],
-  defaultId: string | null,
-  agentIdentity: AgentIdentityResult | null,
-  onSetDefault: (agentId: string) => void,
-) {
-  const badge = agentBadgeText(agent.id, defaultId);
-  const displayName = normalizeAgentLabel(agent);
-  const subtitle = agent.identity?.theme?.trim() || "Agent workspace and routing.";
-  const avatarUrl = resolveAgentAvatarUrl(agent, agentIdentity);
-  const hue = agentAvatarHue(agent.id);
-  const isDefault = Boolean(defaultId && agent.id === defaultId);
-
-  const copyId = () => {
-    void navigator.clipboard.writeText(agent.id);
-    actionsMenuOpen = false;
-  };
-
-  return html`
-    <section class="card agent-header">
-      <div class="agent-header-main">
-        <div class="agent-avatar agent-avatar--lg" style="--agent-hue: ${hue}">
-          ${avatarUrl ? html`<img src=${avatarUrl} alt="" class="agent-avatar__img" />` : "🦞"}
-        </div>
-        <div>
-          <div class="card-title">${displayName}</div>
-          <div class="card-sub">${subtitle}</div>
-        </div>
-      </div>
-      <div class="agent-header-meta">
-        <div class="mono">${agent.id}</div>
-        <div class="row" style="gap: 8px; align-items: center;">
-          ${badge ? html`<span class="agent-pill">${badge}</span>` : nothing}
-          <div class="agent-actions-wrap">
-            <button
-              class="agent-actions-toggle"
-              type="button"
-              @click=${() => {
-                actionsMenuOpen = !actionsMenuOpen;
-              }}
-            >⋯</button>
-            ${
-              actionsMenuOpen
-                ? html`
-                    <div class="agent-actions-menu">
-                      <button type="button" @click=${copyId}>Copy agent ID</button>
-                      <button
-                        type="button"
-                        ?disabled=${isDefault}
-                        @click=${() => {
-                          onSetDefault(agent.id);
-                          actionsMenuOpen = false;
-                        }}
-                      >
-                        ${isDefault ? "Already default" : "Set as default"}
-                      </button>
-                    </div>
-                  `
-                : nothing
-            }
-          </div>
-        </div>
-      </div>
-    </section>
-  `;
-}
 
 function renderAgentTabs(
   active: AgentsPanel,
