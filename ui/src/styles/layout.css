@@ -836,26 +836,26 @@
   align-content: center;
 }
 
-/* Compact chat controls in minimal header */
+/* Chat controls in header - prominent and accessible */
 .content-header .btn--icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 20px;
-  height: 20px;
-  padding: 2px !important;
+  min-width: 32px;
+  height: 32px;
+  padding: 6px !important;
 }
 
 .content-header .btn--icon svg {
   display: block;
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
 }
 
 .content-header .chat-controls__session select,
 .content-header .chat-controls__thinking {
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .content-header .chat-controls__session {
