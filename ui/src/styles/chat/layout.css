@@ -321,7 +321,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -339,9 +339,9 @@
 
 /* Icon button style */
 .btn--icon {
-  padding: 5px !important;
-  min-width: 28px;
-  height: 28px;
+  padding: 0 !important;
+  min-width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -353,14 +353,14 @@
 /* Controls separator — renders as a thin vertical divider */
 .chat-controls__separator {
   width: 1px;
-  height: 18px;
+  height: 32px;
   background: var(--border);
   font-size: 0;
   color: transparent;
   overflow: hidden;
   align-self: center;
   flex-shrink: 0;
-  margin: 0 2px;
+  margin: 0 4px;
 }
 
 .btn--icon:hover {
@@ -377,8 +377,8 @@
 
 .btn--icon svg {
   display: block;
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
   stroke: currentColor;
   fill: none;
@@ -399,7 +399,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 13px;
+  font-size: 12px;
   padding: 0 10px;
   height: 32px;
   background: color-mix(in srgb, var(--secondary) 90%, transparent);
