@@ -398,7 +398,7 @@ function resolveSessionOptions(
 
 type ThemeOption = { id: ThemeMode; label: string };
 const THEME_OPTIONS: ThemeOption[] = [
-  { id: "dark", label: "Dark" },
+  { id: "dark", label: "Claw" },
   { id: "light", label: "Light" },
   { id: "openknot", label: "Knot" },
   { id: "fieldmanual", label: "Field" },

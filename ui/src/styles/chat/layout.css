@@ -9,7 +9,8 @@
   flex-direction: column;
   flex: 1 1 0;
   height: 100%;
-  min-height: 0; /* Allow flex shrinking */
+  min-height: 0;
+  /* Allow flex shrinking */
   overflow: hidden;
   background: transparent !important;
   border: none !important;
@@ -24,8 +25,8 @@
   gap: 8px;
   flex-wrap: nowrap;
   flex-shrink: 0;
-  padding-bottom: 8px;
-  margin-bottom: 8px;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
   background: transparent;
 }
 
@@ -49,18 +50,18 @@
 
 /* Chat thread - scrollable middle section, transparent */
 .chat-thread {
-  flex: 1 1 0; /* Grow, shrink, and use 0 base for proper scrolling */
+  flex: 1 1 0;
+  /* Grow, shrink, and use 0 base for proper scrolling */
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 10px 6px;
+  padding: 6px 6px 4px;
   margin: 0 -4px;
-  min-height: 0; /* Allow shrinking for flex scroll behavior */
+  min-height: 0;
+  /* Allow shrinking for flex scroll behavior */
   border-radius: var(--radius-lg);
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--panel) 72%, transparent),
-    transparent
-  );
+  background: linear-gradient(180deg,
+      color-mix(in srgb, var(--panel) 72%, transparent),
+      transparent);
 }
 
 /* Focus mode exit button */
@@ -151,9 +152,10 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: auto; /* Push to bottom of flex container */
-  padding: 14px 6px 6px;
+  gap: 8px;
+  margin-top: auto;
+  /* Push to bottom of flex container */
+  padding: 6px 6px 6px;
   background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--bg) 94%, black) 22%);
   backdrop-filter: blur(4px);
   z-index: 10;
@@ -170,7 +172,8 @@
   border: 1px solid var(--border);
   width: fit-content;
   max-width: 100%;
-  align-self: flex-start; /* Don't stretch in flex column parent */
+  align-self: flex-start;
+  /* Don't stretch in flex column parent */
 }
 
 .chat-attachment {
@@ -267,7 +270,7 @@
 }
 
 /* Hide the "Message" label - keep textarea only */
-.chat-compose__field > span {
+.chat-compose__field>span {
   display: none;
 }
 
@@ -371,6 +374,7 @@
   display: block;
   width: 14px;
   height: 14px;
+  flex-shrink: 0;
   stroke: currentColor;
   fill: none;
   stroke-width: 1.5px;
@@ -413,7 +417,7 @@
 
   .chat-controls__session {
     min-width: 80px;
-    max-width: 140px;
+    max-width: 148px;
   }
 
   .chat-controls__separator {

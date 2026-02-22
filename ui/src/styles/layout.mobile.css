@@ -93,8 +93,12 @@
 
   /* Content — compact header on chat, hide on other tabs */
   .content-header {
-    padding: 0;
-    max-height: 40px;
+    height: 64px;
+    min-height: 64px;
+    padding: 12px 0;
+    /* This controls the height of the content header on mobile */
+    max-height: 64px;
+    margin-top: 24px;
   }
 
   .content:not(.content--chat) .content-header {

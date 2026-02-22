@@ -125,68 +125,70 @@ export function renderAgents(props: AgentsProps) {
         <div class="agents-toolbar-row">
           <span class="agents-toolbar-label">Agent</span>
           <div class="agents-control-row">
-            <div class="agents-control-main">
+            <div class="agents-control-select">
               <select
                 class="agents-select"
-              .value=${selectedId ?? ""}
-              ?disabled=${props.loading || agents.length === 0}
-              @change=${(e: Event) => props.onSelectAgent((e.target as HTMLSelectElement).value)}
-            >
-              ${
-                agents.length === 0
-                  ? html`
-                      <option value="">No agents</option>
-                    `
-                  : agents.map(
-                      (agent) => html`
-                      <option value=${agent.id} ?selected=${agent.id === selectedId}>
-                        ${normalizeAgentLabel(agent)}${agentBadgeText(agent.id, defaultId) ? ` (${agentBadgeText(agent.id, defaultId)})` : ""}
-                      </option>
-                    `,
-                    )
-              }
-            </select>
-            ${
-              selectedAgent
-                ? html`
-                    <div class="agent-actions-wrap">
-                      <button
-                        class="agent-actions-toggle"
-                        type="button"
-                        @click=${() => {
-                          actionsMenuOpen = !actionsMenuOpen;
-                        }}
-                      >⋯</button>
-                      ${
-                        actionsMenuOpen
-                          ? html`
-                              <div class="agent-actions-menu">
-                                <button type="button" @click=${() => {
-                                  void navigator.clipboard.writeText(selectedAgent.id);
-                                  actionsMenuOpen = false;
-                                }}>Copy agent ID</button>
-                                <button
-                                  type="button"
-                                  ?disabled=${Boolean(defaultId && selectedAgent.id === defaultId)}
-                                  @click=${() => {
-                                    props.onSetDefault(selectedAgent.id);
-                                    actionsMenuOpen = false;
-                                  }}
-                                >
-                                  ${defaultId && selectedAgent.id === defaultId ? "Already default" : "Set as default"}
-                                </button>
-                              </div>
-                            `
-                          : nothing
-                      }
-                    </div>
-                  `
-                : nothing
-            }
+                .value=${selectedId ?? ""}
+                ?disabled=${props.loading || agents.length === 0}
+                @change=${(e: Event) => props.onSelectAgent((e.target as HTMLSelectElement).value)}
+              >
+                ${
+                  agents.length === 0
+                    ? html`
+                        <option value="">No agents</option>
+                      `
+                    : agents.map(
+                        (agent) => html`
+                        <option value=${agent.id} ?selected=${agent.id === selectedId}>
+                          ${normalizeAgentLabel(agent)}${agentBadgeText(agent.id, defaultId) ? ` (${agentBadgeText(agent.id, defaultId)})` : ""}
+                        </option>
+                      `,
+                      )
+                }
+              </select>
             </div>
-            <button class="btn btn--sm agents-refresh-btn" ?disabled=${props.loading} @click=${props.onRefresh}>
-              ${props.loading ? "Loading…" : "Refresh"}
-            </button>
+            <div class="agents-control-actions">
+              ${
+                selectedAgent
+                  ? html`
+                      <div class="agent-actions-wrap">
+                        <button
+                          class="agent-actions-toggle"
+                          type="button"
+                          @click=${() => {
+                            actionsMenuOpen = !actionsMenuOpen;
+                          }}
+                        >⋯</button>
+                        ${
+                          actionsMenuOpen
+                            ? html`
+                                <div class="agent-actions-menu">
+                                  <button type="button" @click=${() => {
+                                    void navigator.clipboard.writeText(selectedAgent.id);
+                                    actionsMenuOpen = false;
+                                  }}>Copy agent ID</button>
+                                  <button
+                                    type="button"
+                                    ?disabled=${Boolean(defaultId && selectedAgent.id === defaultId)}
+                                    @click=${() => {
+                                      props.onSetDefault(selectedAgent.id);
+                                      actionsMenuOpen = false;
+                                    }}
+                                  >
+                                    ${defaultId && selectedAgent.id === defaultId ? "Already default" : "Set as default"}
+                                  </button>
+                                </div>
+                              `
+                            : nothing
+                        }
+                      </div>
+                    `
+                  : nothing
+              }
+              <button class="btn btn--sm agents-refresh-btn" ?disabled=${props.loading} @click=${props.onRefresh}>
+                ${props.loading ? "Loading…" : "Refresh"}
+              </button>
+            </div>
           </div>
         </div>
         ${

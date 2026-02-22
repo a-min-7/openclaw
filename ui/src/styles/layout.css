@@ -64,7 +64,7 @@
   padding-top: 0;
 }
 
-.shell--chat-focus .content > * + * {
+.shell--chat-focus .content>*+* {
   margin-top: 0;
 }
 
@@ -497,10 +497,9 @@
   cursor: pointer;
   color: var(--muted);
   flex-shrink: 0;
-  transition:
-    background var(--duration-fast) ease,
-    border-color var(--duration-fast) ease,
-    color var(--duration-fast) ease;
+  transition: background var(--duration-fast) ease,
+  border-color var(--duration-fast) ease,
+  color var(--duration-fast) ease;
 }
 
 .sidebar--collapsed .sidebar-collapse-btn {
@@ -747,29 +746,31 @@
   overflow-x: hidden;
 }
 
-.content > * + * {
+.content>*+* {
   margin-top: 18px;
 }
 
 .content--chat {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
   overflow: hidden;
   padding-bottom: 0;
 }
 
-.content--chat > * + * {
+.content--chat>*+* {
   margin-top: 0;
 }
 
 /* Content header */
 .content-header {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  padding: 0;
+  gap: 8px;
+  height: 40px;
+  min-height: 40px;
+  padding: 2px 0;
   overflow: hidden;
   transform-origin: top center;
   transition:
@@ -777,7 +778,7 @@
     transform var(--shell-focus-duration) var(--shell-focus-ease),
     max-height var(--shell-focus-duration) var(--shell-focus-ease),
     padding var(--shell-focus-duration) var(--shell-focus-ease);
-  max-height: 16px; /* 66% reduction from 48px */
+  max-height: 40px;
 }
 
 .shell--chat-focus .content-header {
@@ -818,7 +819,7 @@
   gap: 10px;
 }
 
-.content--chat .content-header > div:first-child {
+.content--chat .content-header>div:first-child {
   text-align: left;
 }
 
@@ -828,6 +829,45 @@
 
 .content--chat .chat-controls {
   flex-shrink: 0;
+}
+
+/* Compact chat controls in minimal header */
+.content-header .btn--icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 2px !important;
+}
+
+.content-header .btn--icon svg {
+  display: block;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.content-header .chat-controls__session select,
+.content-header .chat-controls__thinking {
+  font-size: 11px;
+}
+
+.content-header .chat-controls__session select {
+  height: 20px;
+  line-height: 1;
+}
+
+.content-header .chat-controls__separator {
+  line-height: 20px;
+  align-self: center;
+}
+
+.content-header .chat-controls__thinking {
+  height: 20px;
+  min-height: 20px;
+  align-items: center;
+  padding: 0 8px;
 }
 
 /* ===========================================
@@ -903,7 +943,11 @@
   }
 
   .content-header {
-    max-height: 44px;
+    /* This controls the height of the content header on desktop */
+    height: 40px;
+    min-height: 40px;
+    max-height: 40px;
+    padding: 0;
   }
 
   .page-sub {
@@ -914,7 +958,7 @@
     padding: 10px 12px 20px;
   }
 
-  .content > * + * {
+  .content>*+* {
     margin-top: 14px;
   }
 
