@@ -154,8 +154,8 @@ export function renderAgentOverview(params: {
 
       <div class="agent-model-select" style="margin-top: 20px;">
         <div class="label">Model Selection</div>
-        <div class="row" style="gap: 12px; flex-wrap: wrap;">
-          <label class="field" style="min-width: 260px; flex: 1;">
+        <div class="agent-model-fields">
+          <label class="field">
             <span>Primary model${isDefault ? " (default)" : ""}</span>
             <select
               .value=${effectivePrimary ?? ""}
@@ -175,7 +175,7 @@ export function renderAgentOverview(params: {
               ${buildModelOptions(configForm, effectivePrimary ?? undefined)}
             </select>
           </label>
-          <div class="field" style="min-width: 260px; flex: 1;">
+          <div class="field">
             <span>Fallbacks</span>
             <div class="agent-chip-input" @click=${(e: Event) => {
               const container = e.currentTarget as HTMLElement;
@@ -213,11 +213,12 @@ export function renderAgentOverview(params: {
             </div>
           </div>
         </div>
-        <div class="row" style="justify-content: flex-end; gap: 8px;">
-          <button class="btn btn--sm" ?disabled=${configLoading} @click=${onConfigReload}>
+        <div class="agent-model-actions">
+          <button type="button" class="btn btn--sm" ?disabled=${configLoading} @click=${onConfigReload}>
             Reload Config
           </button>
           <button
+            type="button"
             class="btn btn--sm primary"
             ?disabled=${configSaving || !configDirty}
             @click=${onConfigSave}

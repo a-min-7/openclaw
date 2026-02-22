@@ -94,7 +94,7 @@
   /* Content — compact header on chat, hide on other tabs */
   .content-header {
     padding: 0;
-    max-height: 48px;
+    max-height: 40px;
   }
 
   .content:not(.content--chat) .content-header {
@@ -102,7 +102,7 @@
   }
 
   .content--chat .page-title {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .content--chat .page-sub {
@@ -110,8 +110,8 @@
   }
 
   .content {
-    padding: 4px 4px 16px;
-    gap: 12px;
+    padding: 4px 6px 12px;
+    gap: 10px;
   }
 
   /* Cards */

@@ -79,6 +79,33 @@ import { renderSkills } from "./views/skills.ts";
 const AVATAR_DATA_RE = /^data:/i;
 const AVATAR_HTTP_RE = /^https?:\/\//i;
 
+const NAV_WIDTH_MIN = 180;
+const NAV_WIDTH_MAX = 400;
+
+function handleNavResizeStart(e: MouseEvent, state: AppViewState) {
+  e.preventDefault();
+  const startX = e.clientX;
+  const startWidth = state.settings.navWidth;
+
+  const onMove = (ev: MouseEvent) => {
+    const delta = ev.clientX - startX;
+    const next = Math.round(Math.min(NAV_WIDTH_MAX, Math.max(NAV_WIDTH_MIN, startWidth + delta)));
+    state.applySettings({ ...state.settings, navWidth: next });
+  };
+
+  const onUp = () => {
+    document.removeEventListener("mousemove", onMove);
+    document.removeEventListener("mouseup", onUp);
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+  };
+
+  document.body.style.cursor = "col-resize";
+  document.body.style.userSelect = "none";
+  document.addEventListener("mousemove", onMove);
+  document.addEventListener("mouseup", onUp);
+}
+
 function resolveAssistantAvatarUrl(state: AppViewState): string | undefined {
   const list = state.agentsList?.agents ?? [];
   const parsed = parseAgentSessionKey(state.sessionKey);
@@ -140,11 +167,15 @@ export function renderApp(state: AppViewState) {
       onNavigate: (tab) => {
         state.setTab(tab as import("./navigation.ts").Tab);
       },
-      onSlashCommand: (_cmd) => {
+      onSlashCommand: (cmd) => {
         state.setTab("chat" as import("./navigation.ts").Tab);
+        state.chatMessage = cmd.endsWith(" ") ? cmd : `${cmd} `;
       },
     })}
-    <div class="shell ${isChat ? "shell--chat" : ""} ${chatFocus ? "shell--chat-focus" : ""} ${state.settings.navCollapsed ? "shell--nav-collapsed" : ""} ${state.onboarding ? "shell--onboarding" : ""}">
+    <div
+      class="shell ${isChat ? "shell--chat" : ""} ${chatFocus ? "shell--chat-focus" : ""} ${state.settings.navCollapsed ? "shell--nav-collapsed" : ""} ${state.onboarding ? "shell--onboarding" : ""}"
+      style="--shell-nav-width: ${state.settings.navWidth}px"
+    >
       <header class="topbar">
         <dashboard-header .tab=${state.tab}></dashboard-header>
         <button
@@ -159,23 +190,6 @@ export function renderApp(state: AppViewState) {
           <kbd class="topbar-search__kbd">⌘K</kbd>
         </button>
         <div class="topbar-status">
-          <button
-            class="topbar-redact ${state.streamMode ? "topbar-redact--active" : ""}"
-            @click=${() => {
-              state.streamMode = !state.streamMode;
-              try {
-                localStorage.setItem("openclaw:stream-mode", String(state.streamMode));
-              } catch {
-                /* */
-              }
-            }}
-            title="${state.streamMode ? "Sensitive data hidden — click to reveal" : "Sensitive data visible — click to hide"}"
-            aria-label="Toggle redaction"
-            aria-pressed=${state.streamMode}
-          >
-            ${state.streamMode ? icons.eye : icons.eyeOff}
-          </button>
-          <span class="topbar-divider"></span>
           <div class="topbar-connection ${state.connected ? "topbar-connection--ok" : ""}">
             <span class="topbar-connection__dot"></span>
             <span class="topbar-connection__label">${state.connected ? t("common.ok") : t("common.offline")}</span>
@@ -184,6 +198,7 @@ export function renderApp(state: AppViewState) {
           ${renderThemeToggle(state)}
         </div>
       </header>
+      <div class="shell-nav">
       <aside class="sidebar ${state.settings.navCollapsed ? "sidebar--collapsed" : ""}">
       <div class="sidebar-header">
         ${
@@ -249,42 +264,61 @@ export function renderApp(state: AppViewState) {
         </nav>
 
         <div class="sidebar-footer">
-          <a
-            class="nav-item nav-item--external"
-            href="https://docs.openclaw.ai"
-            target="_blank"
-            rel="noreferrer"
-            title="${t("common.docs")} (opens in new tab)"
-          >
-            <span class="nav-item__icon" aria-hidden="true">${icons.book}</span>
-            ${
-              !state.settings.navCollapsed
-                ? html`
+          <div class="sidebar-footer__docs-block">
+            <a
+              class="nav-item nav-item--external"
+              href="https://docs.openclaw.ai"
+              target="_blank"
+              rel="noreferrer"
+              title="${t("common.docs")} (opens in new tab)"
+            >
+              <span class="nav-item__icon" aria-hidden="true">${icons.book}</span>
+              ${
+                !state.settings.navCollapsed
+                  ? html`
               <span class="nav-item__text">${t("common.docs")}</span>
               <span class="nav-item__external-icon">${icons.externalLink}</span>
             `
-                : nothing
-            }
-          </a>
-          ${(() => {
-            const snapshot = state.hello?.snapshot as { server?: { version?: string } } | undefined;
-            const version = snapshot?.server?.version ?? "";
-            return version
-              ? html`
-                <div class="sidebar-version" title=${`v${version}`}>
-                  ${
-                    !state.settings.navCollapsed
-                      ? html`<span class="sidebar-version__text">v${version}</span>`
-                      : html`
-                          <span class="sidebar-version__dot"></span>
-                        `
-                  }
-                </div>
-              `
-              : nothing;
-          })()}
+                  : nothing
+              }
+            </a>
+            ${(() => {
+              const snapshot = state.hello?.snapshot as
+                | { server?: { version?: string } }
+                | undefined;
+              const version = snapshot?.server?.version ?? "";
+              return version
+                ? html`
+                  <div class="sidebar-version" title=${`v${version}`}>
+                    ${
+                      !state.settings.navCollapsed
+                        ? html`<span class="sidebar-version__text">v${version}</span>`
+                        : html`
+                            <span class="sidebar-version__dot"></span>
+                          `
+                    }
+                  </div>
+                `
+                : nothing;
+            })()}
+          </div>
         </div>
       </aside>
+      ${
+        !state.settings.navCollapsed && !chatFocus
+          ? html`
+          <div
+            class="sidebar-resizer"
+            role="separator"
+            aria-orientation="vertical"
+            aria-label="${t("nav.resize")}"
+            title="${t("nav.resize")}"
+            @mousedown=${(ev: MouseEvent) => handleNavResizeStart(ev, state)}
+          ></div>
+        `
+          : nothing
+      }
+      </div>
       <main class="content ${isChat ? "content--chat" : ""}">
         ${
           state.updateAvailable
@@ -301,8 +335,8 @@ export function renderApp(state: AppViewState) {
         }
         <section class="content-header">
           <div>
-            ${state.tab === "usage" ? nothing : html`<div class="page-title">${titleForTab(state.tab)}</div>`}
-            ${state.tab === "usage" ? nothing : html`<div class="page-sub">${subtitleForTab(state.tab)}</div>`}
+            ${state.tab === "usage" || state.tab === "skills" ? nothing : html`<div class="page-title">${titleForTab(state.tab)}</div>`}
+            ${state.tab === "usage" || state.tab === "skills" ? nothing : html`<div class="page-sub">${subtitleForTab(state.tab)}</div>`}
           </div>
           <div class="page-meta">
             ${state.lastError ? html`<div class="pill danger">${state.lastError}</div>` : nothing}
@@ -424,11 +458,36 @@ export function renderApp(state: AppViewState) {
                 includeGlobal: state.sessionsIncludeGlobal,
                 includeUnknown: state.sessionsIncludeUnknown,
                 basePath: state.basePath,
+                searchQuery: state.sessionsSearchQuery,
+                sortColumn: state.sessionsSortColumn,
+                sortDir: state.sessionsSortDir,
+                page: state.sessionsPage,
+                pageSize: state.sessionsPageSize,
+                actionsOpenKey: state.sessionsActionsOpenKey,
                 onFiltersChange: (next) => {
                   state.sessionsFilterActive = next.activeMinutes;
                   state.sessionsFilterLimit = next.limit;
                   state.sessionsIncludeGlobal = next.includeGlobal;
                   state.sessionsIncludeUnknown = next.includeUnknown;
+                },
+                onSearchChange: (q) => {
+                  state.sessionsSearchQuery = q;
+                  state.sessionsPage = 0;
+                },
+                onSortChange: (col, dir) => {
+                  state.sessionsSortColumn = col;
+                  state.sessionsSortDir = dir;
+                  state.sessionsPage = 0;
+                },
+                onPageChange: (p) => {
+                  state.sessionsPage = p;
+                },
+                onPageSizeChange: (s) => {
+                  state.sessionsPageSize = s;
+                  state.sessionsPage = 0;
+                },
+                onActionsOpenChange: (key) => {
+                  state.sessionsActionsOpenKey = key;
                 },
                 onRefresh: () => loadSessions(state),
                 onPatch: (key, patch) => patchSession(state, key, patch),
@@ -471,6 +530,7 @@ export function renderApp(state: AppViewState) {
         ${
           state.tab === "agents"
             ? renderAgents({
+                basePath: state.basePath ?? "",
                 loading: state.agentsLoading,
                 error: state.agentsError,
                 agentsList: state.agentsList,
@@ -512,10 +572,6 @@ export function renderApp(state: AppViewState) {
                   error: state.agentSkillsError,
                   agentId: state.agentSkillsAgentId,
                   filter: state.skillsFilter,
-                },
-                sidebarFilter: state.agentsSidebarFilter,
-                onSidebarFilterChange: (value) => {
-                  state.agentsSidebarFilter = value;
                 },
                 onRefresh: async () => {
                   await loadAgents(state);

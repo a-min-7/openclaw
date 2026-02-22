@@ -79,8 +79,6 @@ export type AgentsProps = {
   agentIdentityError: string | null;
   agentIdentityById: Record<string, AgentIdentityResult>;
   agentSkills: AgentSkillsState;
-  sidebarFilter: string;
-  onSidebarFilterChange: (value: string) => void;
   onRefresh: () => void;
   onSelectAgent: (agentId: string) => void;
   onSelectPanel: (panel: AgentsPanel) => void;
@@ -114,14 +112,6 @@ export function renderAgents(props: AgentsProps) {
     ? (agents.find((agent) => agent.id === selectedId) ?? null)
     : null;
 
-  const sidebarFilter = props.sidebarFilter.trim().toLowerCase();
-  const filteredAgents = sidebarFilter
-    ? agents.filter((agent) => {
-        const label = normalizeAgentLabel(agent).toLowerCase();
-        return label.includes(sidebarFilter) || agent.id.toLowerCase().includes(sidebarFilter);
-      })
-    : agents;
-
   const channelEntryCount = props.channels.snapshot
     ? Object.keys(props.channels.snapshot.channelAccounts ?? {}).length
     : null;
@@ -137,68 +127,40 @@ export function renderAgents(props: AgentsProps) {
 
   return html`
     <div class="agents-layout">
-      <section class="card agents-sidebar">
-        <div class="row" style="justify-content: space-between;">
-          <div>
-            <div class="card-title">Agents</div>
-            <div class="card-sub">${agents.length} configured.</div>
-          </div>
+      <section class="agents-toolbar">
+        <div class="row" style="gap: 12px; align-items: center; flex-wrap: wrap;">
+          <label class="field" style="min-width: 200px; max-width: 320px;">
+            <span class="label">Agent</span>
+            <select
+              class="agents-select"
+              .value=${selectedId ?? ""}
+              ?disabled=${props.loading || agents.length === 0}
+              @change=${(e: Event) => props.onSelectAgent((e.target as HTMLSelectElement).value)}
+            >
+              ${
+                agents.length === 0
+                  ? html`
+                      <option value="">No agents</option>
+                    `
+                  : agents.map(
+                      (agent) => html`
+                      <option value=${agent.id} ?selected=${agent.id === selectedId}>
+                        ${normalizeAgentLabel(agent)}${agentBadgeText(agent.id, defaultId) ? ` (${agentBadgeText(agent.id, defaultId)})` : ""}
+                      </option>
+                    `,
+                    )
+              }
+            </select>
+          </label>
           <button class="btn btn--sm" ?disabled=${props.loading} @click=${props.onRefresh}>
             ${props.loading ? "Loading…" : "Refresh"}
           </button>
         </div>
         ${
-          agents.length > 1
-            ? html`
-                <input
-                  class="field"
-                  type="text"
-                  placeholder="Filter agents…"
-                  .value=${props.sidebarFilter}
-                  @input=${(e: Event) =>
-                    props.onSidebarFilterChange((e.target as HTMLInputElement).value)}
-                  style="margin-top: 8px;"
-                />
-              `
-            : nothing
-        }
-        ${
           props.error
             ? html`<div class="callout danger" style="margin-top: 12px;">${props.error}</div>`
             : nothing
         }
-        <div class="agent-list" style="margin-top: 12px;">
-          ${
-            filteredAgents.length === 0
-              ? html`
-                  <div class="muted">${sidebarFilter ? "No matching agents." : "No agents found."}</div>
-                `
-              : filteredAgents.map((agent) => {
-                  const badge = agentBadgeText(agent.id, defaultId);
-                  const avatarUrl = resolveAgentAvatarUrl(
-                    agent,
-                    props.agentIdentityById[agent.id] ?? null,
-                  );
-                  const hue = agentAvatarHue(agent.id);
-                  return html`
-                    <button
-                      type="button"
-                      class="agent-row ${selectedId === agent.id ? "active" : ""}"
-                      @click=${() => props.onSelectAgent(agent.id)}
-                    >
-                      <div class="agent-avatar" style="--agent-hue: ${hue}">
-                        ${avatarUrl ? html`<img src=${avatarUrl} alt="" class="agent-avatar__img" />` : "🦞"}
-                      </div>
-                      <div class="agent-info">
-                        <div class="agent-title">${normalizeAgentLabel(agent)}</div>
-                        <div class="agent-sub mono">${agent.id}</div>
-                      </div>
-                      ${badge ? html`<span class="agent-pill">${badge}</span>` : nothing}
-                    </button>
-                  `;
-                })
-          }
-        </div>
       </section>
       <section class="agents-main">
         ${

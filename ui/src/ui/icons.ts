@@ -369,6 +369,21 @@ export const icons = {
       <path d="m2 2 20 20" />
     </svg>
   `,
+  moreHorizontal: html`
+    <svg viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="1.5" />
+      <circle cx="6" cy="12" r="1.5" />
+      <circle cx="18" cy="12" r="1.5" />
+    </svg>
+  `,
+  arrowUpDown: html`
+    <svg viewBox="0 0 24 24">
+      <path d="m21 16-4 4-4-4" />
+      <path d="M17 20V4" />
+      <path d="m3 8 4-4 4 4" />
+      <path d="M7 4v16" />
+    </svg>
+  `,
 } as const;
 
 export type IconName = keyof typeof icons;
