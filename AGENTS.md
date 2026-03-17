@@ -23,7 +23,7 @@ This fork is maintained by **mnck.ai**. The AI assistant running here should emb
 - **Upstream:** https://github.com/openclaw/openclaw (tracked as `upstream` remote)
 - **Fork:** https://github.com/a-min-7/openclaw (tracked as `origin` remote)
 - **Purpose:** Run the OpenClaw gateway locally with a **self-hosted Ollama instance** instead of cloud AI providers. Goal is full local/private AI — no API keys, no cloud calls, no data leaving the LAN.
-- The fork is kept at the upstream release tag (`v2026.3.12` pinned) and periodically rebased or fast-forwarded to new stable tags.
+- The fork is kept at the upstream release tag (`v2026.3.13-1` pinned) and periodically rebased or fast-forwarded to new stable tags.
 
 ## 2. Local changes vs upstream and why
 
