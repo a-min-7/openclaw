@@ -230,6 +230,9 @@ info "  ✓ Image built"
 
 # ── 9. Restart stack ──────────────────────────────────────────────────────────
 step "7/10  Restarting stack"
+# Force-remove any dependent CLI/TUI containers first
+podman ps -a --filter "name=openclaw.*cli" --format "{{.ID}}" \
+  | xargs -r podman rm -f 2>>"$LOG_FILE" || true
 podman compose --env-file .env down --remove-orphans --timeout 10 2>&1 | tee -a "$LOG_FILE"
 podman compose --env-file .env up -d openclaw-gateway 2>&1 | tee -a "$LOG_FILE"
 info "  ✓ Stack restarted"
