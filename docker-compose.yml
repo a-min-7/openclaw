@@ -4,23 +4,16 @@ services:
     environment:
       HOME: /home/node
       TERM: xterm-256color
+      OPENCLAW_CONFIG_PATH: /home/node/.config/openclaw/openclaw.json
+      OPENCLAW_STATE_DIR: /home/node/.local/state/openclaw
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-}
       OPENCLAW_ALLOW_INSECURE_PRIVATE_WS: ${OPENCLAW_ALLOW_INSECURE_PRIVATE_WS:-}
-      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
-      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
-      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
-      TZ: ${OPENCLAW_TZ:-UTC}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://192.168.0.13:11434}
+      OLLAMA_API_KEY: ${OLLAMA_API_KEY:-ollama-local}
     volumes:
-      - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
-      ## Uncomment the lines below to enable sandbox isolation
-      ## (agents.defaults.sandbox). Requires Docker CLI in the image
-      ## (build with --build-arg OPENCLAW_INSTALL_DOCKER_CLI=1) or use
-      ## docker-setup.sh with OPENCLAW_SANDBOX=1 for automated setup.
-      ## Set DOCKER_GID to the host's docker group GID (run: stat -c '%g' /var/run/docker.sock).
-      # - /var/run/docker.sock:/var/run/docker.sock
-    # group_add:
-    #   - "${DOCKER_GID:-999}"
+      - ${OPENCLAW_CONFIG_DIR}:/home/node/.config/openclaw
+      - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.local/share/openclaw/workspace
+      - ${OPENCLAW_STATE_DIR}:/home/node/.local/state/openclaw
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
@@ -29,12 +22,13 @@ services:
     command:
       [
         "node",
-        "dist/index.js",
+        "openclaw.mjs",
         "gateway",
+        "--allow-unconfigured",
         "--bind",
         "${OPENCLAW_GATEWAY_BIND:-lan}",
         "--port",
-        "18789",
+        "18789"
       ]
     healthcheck:
       test:
@@ -60,19 +54,19 @@ services:
     environment:
       HOME: /home/node
       TERM: xterm-256color
+      OPENCLAW_CONFIG_PATH: /home/node/.config/openclaw/openclaw.json
+      OPENCLAW_STATE_DIR: /home/node/.local/state/openclaw
       OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-}
-      OPENCLAW_ALLOW_INSECURE_PRIVATE_WS: ${OPENCLAW_ALLOW_INSECURE_PRIVATE_WS:-}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://192.168.0.13:11434}
+      OLLAMA_API_KEY: ${OLLAMA_API_KEY:-ollama-local}
       BROWSER: echo
-      CLAUDE_AI_SESSION_KEY: ${CLAUDE_AI_SESSION_KEY:-}
-      CLAUDE_WEB_SESSION_KEY: ${CLAUDE_WEB_SESSION_KEY:-}
-      CLAUDE_WEB_COOKIE: ${CLAUDE_WEB_COOKIE:-}
-      TZ: ${OPENCLAW_TZ:-UTC}
     volumes:
-      - ${OPENCLAW_CONFIG_DIR}:/home/node/.openclaw
-      - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.openclaw/workspace
+      - ${OPENCLAW_CONFIG_DIR}:/home/node/.config/openclaw
+      - ${OPENCLAW_WORKSPACE_DIR}:/home/node/.local/share/openclaw/workspace
+      - ${OPENCLAW_STATE_DIR}:/home/node/.local/state/openclaw
     stdin_open: true
     tty: true
     init: true
-    entrypoint: ["node", "dist/index.js"]
+    entrypoint: ["node", "openclaw.mjs"]
     depends_on:
       - openclaw-gateway
